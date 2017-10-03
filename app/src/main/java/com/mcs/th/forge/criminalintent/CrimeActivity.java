@@ -12,7 +12,6 @@ public class CrimeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crime);
         FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
         if (fragment == null) {
             fragment=new CrimeFragment();
