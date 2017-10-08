@@ -4,4 +4,6 @@
     <string name="title_hint">Enter a title for the crime</string>
     <string name="details_label">DETAILS</string>
     <string name="solved_label">Solved</string>
+    <string name="list_item_crime_title">Crime Title</string>
+    <string name="list_item_crime_date">Crime Date</string>
 </resources>
