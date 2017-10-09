@@ -5,42 +5,42 @@ import java.util.UUID;
 
 public class Crime {
 
-    private String title;
-    private UUID id;
-    private boolean solved;
-    private Date date;
+    private String mTitle;
+    private UUID mId;
+    private boolean mSolved;
+    private Date mDate;
 
     public Crime() {
-        this.id = UUID.randomUUID();
-        this.date = new Date();
+        mId = UUID.randomUUID();
+        mDate = new Date();
     }
 
     public String getTitle() {
 
-        return title;
+        return mTitle;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.mTitle = title;
     }
 
     public boolean isSolved() {
-        return solved;
+        return mSolved;
     }
 
     public void setSolved(boolean solved) {
-        this.solved = solved;
+        this.mSolved = solved;
     }
 
     public Date getDate() {
-        return date;
+        return mDate;
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        this.mDate = date;
     }
 
     public UUID getId() {
-        return id;
+        return mId;
     }
 }
