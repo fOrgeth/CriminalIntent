@@ -1,6 +1,11 @@
 package com.mcs.th.forge.criminalintent;
 
+
+
+import android.text.format.DateFormat;
+
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 public class Crime {
@@ -32,8 +37,9 @@ public class Crime {
         this.mSolved = solved;
     }
 
-    public Date getDate() {
-        return mDate;
+    public CharSequence getDate() {
+        String str = DateFormat.getBestDateTimePattern(Locale.getDefault(),"EEE, MMM, dd, yyyy");
+        return DateFormat.format(str, mDate);
     }
 
     public void setDate(Date date) {

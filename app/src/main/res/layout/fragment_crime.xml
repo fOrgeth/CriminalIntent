@@ -6,6 +6,8 @@
               android:orientation="vertical">
 
     <TextView
+        style="?android:listSeparatorTextViewStyle"
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/title_label"/>
@@ -17,6 +19,7 @@
         android:hint="@string/title_hint"/>
 
     <TextView
+        style="?android:listSeparatorTextViewStyle"
         android:id="@+id/details_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,8 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:padding="80dp"/>
+        android:layout_marginRight="16dp"/>
 
     <CheckBox
         android:id="@+id/solved_checkbox"
