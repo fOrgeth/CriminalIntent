@@ -1,5 +1,6 @@
 package com.mcs.th.forge.criminalintent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,8 +17,18 @@ import java.util.List;
 
 public class CrimeListFragment extends Fragment {
 
+    private int savedPosition;
+    private static final String SAVED_POSITION = "saved_position";
+//    private static final int REQUEST_CRIME = 1;
+
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(SAVED_POSITION, savedPosition);
+    }
 
     @Nullable
     @Override
@@ -25,15 +36,27 @@ public class CrimeListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
         mCrimeRecyclerView = view.findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        updateUI();
+        if (savedInstanceState != null) {
+            savedPosition = savedInstanceState.getInt(SAVED_POSITION);
+        }
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
     }
 
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
-        this.mAdapter = new CrimeAdapter(crimes);
-        mCrimeRecyclerView.setAdapter(this.mAdapter);
+        if (mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimes);
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.notifyItemChanged(savedPosition);
+        }
     }
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -60,12 +83,19 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(getActivity(),
-                    mCrime.getTitle() + " clicked",
-                    Toast.LENGTH_SHORT)
-                    .show();
+            savedPosition=getAdapterPosition();
+            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
+//            startActivityForResult(intent, REQUEST_CRIME);
+            startActivity(intent);
         }
     }
+
+    /*@Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CRIME) {
+            // Something
+        }
+    }*/
 
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
 

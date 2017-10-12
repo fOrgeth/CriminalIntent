@@ -32,7 +32,7 @@ public class CrimeLab {
         return mCrimeList;
     }
 
-    private Crime getCrime(UUID id) {
+    public Crime getCrime(UUID id) {
         for (Crime crime : mCrimeList) {
             if (crime.getId().equals(id)) {
                 return crime;
