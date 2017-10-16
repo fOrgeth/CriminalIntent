@@ -37,9 +37,10 @@ public class Crime {
         this.mSolved = solved;
     }
 
-    public CharSequence getDate() {
-        String str = DateFormat.getBestDateTimePattern(Locale.getDefault(),"EEE, MMM, dd, yyyy");
-        return DateFormat.format(str, mDate);
+    public Date getDate() {
+        /*String str = DateFormat.getBestDateTimePattern(Locale.getDefault(),"EEE, MMM, dd, yyyy");
+        return DateFormat.format(str, mDate);*/
+        return mDate;
     }
 
     public void setDate(Date date) {
