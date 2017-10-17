@@ -31,6 +31,7 @@ public class CrimeFragment extends Fragment {
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
+    private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
 
     public static CrimeFragment newInstance(UUID crimeId) {
@@ -72,6 +73,7 @@ public class CrimeFragment extends Fragment {
             }
         });
         mDateButton = v.findViewById(R.id.crime_date);
+        mTimeButton= v.findViewById(R.id.crime_time);
         updateDate();
         mDateButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -107,6 +109,8 @@ public class CrimeFragment extends Fragment {
     }
 
     private void updateDate() {
+        Long time = mCrime.getDate().getTime();
         mDateButton.setText(mCrime.getDate().toString());
+
     }
 }
