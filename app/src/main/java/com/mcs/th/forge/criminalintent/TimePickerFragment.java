@@ -39,7 +39,7 @@ public class TimePickerFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Date date = (Date) getArguments().getSerializable(ARG_TIME);
 
-        Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -49,6 +49,7 @@ public class TimePickerFragment extends DialogFragment {
                 .inflate(R.layout.dialog_time, null);
 
         mTimePicker = v.findViewById(R.id.dialog_time_picker);
+        mTimePicker.setIs24HourView(true);
         if (Build.VERSION.SDK_INT >= 23) {
             mTimePicker.setHour(hour);
             mTimePicker.setMinute(minutes);
@@ -64,8 +65,19 @@ public class TimePickerFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
-
-                        Date time = new GregorianCalendar()
+                        int hour;
+                        int minutes;
+                        if (Build.VERSION.SDK_INT >= 23) {
+                            hour = mTimePicker.getHour();
+                            minutes = mTimePicker.getMinute();
+                        } else {
+                            hour = mTimePicker.getCurrentHour();
+                            minutes = mTimePicker.getCurrentMinute();
+                        }
+                        Date time = new GregorianCalendar(calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH),
+                                hour, minutes)
                                 .getTime();
                         sendResult(Activity.RESULT_OK, time);
                     }
