@@ -29,6 +29,7 @@ public class CrimeFragment extends Fragment {
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
 
+
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 1;
 
@@ -83,11 +84,14 @@ public class CrimeFragment extends Fragment {
         mDateButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fragmentManager = getFragmentManager();
+                Intent intent = DialogActivity.newIntent(getContext(), mCrime.getDate());
+                startActivityForResult(intent, REQUEST_DATE);
+
+                /*FragmentManager fragmentManager = getFragmentManager();
                 DatePickerFragment dialog = DatePickerFragment
                         .newInstance(mCrime.getDate());
                 dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
-                dialog.show(fragmentManager, DIALOG_DATE);
+                dialog.show(fragmentManager, DIALOG_DATE);*/
             }
         });
         mTimeButton.setOnClickListener(new OnClickListener() {

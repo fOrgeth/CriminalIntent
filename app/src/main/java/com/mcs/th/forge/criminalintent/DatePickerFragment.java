@@ -61,7 +61,6 @@ public class DatePickerFragment extends DialogFragment {
                 Date date = new GregorianCalendar(year, month, day)
                         .getTime();
                 sendResult(Activity.RESULT_OK, date);
-                dismiss();
             }
         });
         return v;
@@ -103,13 +102,17 @@ public class DatePickerFragment extends DialogFragment {
     }*/
 
     private void sendResult(int resultCode, Date date) {
-        if (getTargetFragment() == null) {
-            return;
-        }
-
         Intent intent = new Intent();
         intent.putExtra(EXTRA_DATE, date);
-        getTargetFragment()
-                .onActivityResult(getTargetRequestCode(), resultCode, intent);
+        if (getTargetFragment() != null) {
+            dismiss();
+            getTargetFragment()
+                    .onActivityResult(getTargetRequestCode(), resultCode, intent);
+        } else if (getActivity() != null) {
+            getActivity().setResult(resultCode, intent);
+            getActivity().finish();
+        }
+
+
     }
 }
