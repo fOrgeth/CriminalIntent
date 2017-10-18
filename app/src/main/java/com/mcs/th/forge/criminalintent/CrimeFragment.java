@@ -79,6 +79,7 @@ public class CrimeFragment extends Fragment {
         mDateButton = v.findViewById(R.id.crime_date);
         mTimeButton = v.findViewById(R.id.crime_time);
         updateDate();
+        updateTime();
         mDateButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,36 +117,35 @@ public class CrimeFragment extends Fragment {
             return;
         }
 
-        switch (requestCode){
-            case REQUEST_DATE:{
+        switch (requestCode) {
+            case REQUEST_DATE: {
                 Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
                 mCrime.setDate(date);
                 updateDate();
                 break;
             }
-            case REQUEST_TIME:{
+            case REQUEST_TIME: {
                 Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
                 mCrime.setDate(date);
-                updateDate();
+                updateTime();
                 break;
             }
             default:
         }
-        /*if (requestCode == REQUEST_DATE || requestCode == REQUEST_TIME) {
-            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-            mCrime.setDate(date);
-            updateDate();
-        }*/
+
     }
 
     private void updateDate() {
+        mDateButton.setText(mCrime.getDate().toString());
+    }
+
+    private void updateTime() {
         Date date = mCrime.getDate();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minutes = calendar.get(Calendar.MINUTE);
-        mTimeButton.setText(String.format(Locale.getDefault(),"%02d : %02d",hour,minutes));
-        mDateButton.setText(date.toString());
-
+        mTimeButton.setText(String.format(Locale.getDefault(), "%02d : %02d", hour, minutes));
     }
+
 }
