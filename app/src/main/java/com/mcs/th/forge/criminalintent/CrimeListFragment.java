@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ public class CrimeListFragment extends Fragment {
 
     private static final String SAVED_POSITION = "saved_position";
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle_visible";
+    private static final String TAG_LOG = "CrimeListFrag";
 
     private int savedPosition;
     private RecyclerView mCrimeRecyclerView;
@@ -42,7 +44,9 @@ public class CrimeListFragment extends Fragment {
     private void updateSubtitle() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         int crimeCount = crimeLab.getCrimes().size();
-        String subtitle = getString(R.string.subtitle_format, crimeCount);
+//        String subtitle = getString(R.string.subtitle_format, crimeCount);
+
+        String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeCount,crimeCount);
         if (!mSubtitleVisible) {
             subtitle = null;
         }
@@ -124,8 +128,11 @@ public class CrimeListFragment extends Fragment {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else {
-            mAdapter.notifyItemChanged(savedPosition);
+            mAdapter.notifyDataSetChanged();
+//            mAdapter.notifyItemChanged(savedPosition);
         }
+
+        Log.d(TAG_LOG, "CrimeListFragment " + crimes.size());
 
         updateSubtitle();
     }

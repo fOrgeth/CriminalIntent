@@ -25,6 +25,16 @@ public class CrimeLab {
         mCrimeList.add(c);
     }
 
+    public boolean deleteCrime(Crime c) {
+        for (Crime crime : mCrimeList) {
+            if (crime.getId().equals(c.getId())) {
+                mCrimeList.remove(mCrimeList.indexOf(crime));
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static CrimeLab get(Context context) {
         if (sCrimeLab == null) {
             sCrimeLab = new CrimeLab(context);
