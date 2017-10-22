@@ -1,7 +1,6 @@
 package com.mcs.th.forge.criminalintent;
 
 
-
 import android.text.format.DateFormat;
 
 import java.util.Date;
@@ -14,8 +13,9 @@ public class Crime {
     private UUID mId;
     private boolean mSolved;
     private Date mDate;
+    private String mSuspect;
 
-    public Crime(){
+    public Crime() {
         this(UUID.randomUUID());
     }
 
@@ -39,6 +39,14 @@ public class Crime {
 
     public void setSolved(boolean solved) {
         this.mSolved = solved;
+    }
+
+    public String getSuspect() {
+        return mSuspect;
+    }
+
+    public void setSuspect(String suspect) {
+        mSuspect = suspect;
     }
 
     public Date getDate() {
