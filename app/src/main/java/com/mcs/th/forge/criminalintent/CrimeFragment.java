@@ -2,10 +2,15 @@ package com.mcs.th.forge.criminalintent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ShareCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -25,6 +30,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import static android.support.v4.app.ShareCompat.*;
 import static android.widget.CompoundButton.*;
 
 public class CrimeFragment extends Fragment {
@@ -36,6 +42,7 @@ public class CrimeFragment extends Fragment {
 
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 1;
+    private static final int REQUEST_CONTACT = 2;
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -43,6 +50,7 @@ public class CrimeFragment extends Fragment {
     private Button mTimeButton;
     private CheckBox mSolvedCheckBox;
     private Button mReportButton;
+    private Button mSuspectButton;
 
     @Override
     public void onPause() {
@@ -148,15 +156,42 @@ public class CrimeFragment extends Fragment {
         mReportButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_SEND);
+                Intent shareIntent = IntentBuilder.from(getActivity())
+                        .setChooserTitle(getString(R.string.send_report))
+                        .setType("text/plain")
+                        .setText(getCrimeReport())
+                        .createChooserIntent();
+
+                /*Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
-                intent = Intent.createChooser(intent, getString(R.string.send_report));
-                startActivity(intent);
+                intent = Intent.createChooser(intent, getString(R.string.send_report));*/
+                startActivity(shareIntent);
 
             }
         });
+
+        final Intent pickContact = new Intent(Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_URI);
+/**     pickContact.addCategory(Intent.CATEGORY_HOME);*/
+        mSuspectButton = v.findViewById(R.id.crime_suspect);
+        mSuspectButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(pickContact, REQUEST_CONTACT);
+            }
+        });
+
+        if (mCrime.getSuspect() != null) {
+            mSuspectButton.setText(mCrime.getSuspect());
+        }
+
+        PackageManager packageManager = getActivity().getPackageManager();
+        if (packageManager.resolveActivity(pickContact,
+                PackageManager.MATCH_DEFAULT_ONLY) == null) {
+            mSuspectButton.setEnabled(false);
+        }
         return v;
     }
 
@@ -178,6 +213,28 @@ public class CrimeFragment extends Fragment {
                 mCrime.setDate(date);
                 updateTime();
                 break;
+            }
+            case REQUEST_CONTACT: {
+                if (data == null) {
+                    return;
+                }
+                Uri contactUri = data.getData();
+                String[] queryFields = new String[]{
+                        ContactsContract.Contacts.DISPLAY_NAME
+                };
+                Cursor c = getActivity().getContentResolver()
+                        .query(contactUri, queryFields, null, null, null);
+                try {
+                    if (c.getCount() == 0) {
+                        return;
+                    }
+                    c.moveToFirst();
+                    String suspect = c.getString(0);
+                    mCrime.setSuspect(suspect);
+                    mSuspectButton.setText(suspect);
+                } finally {
+                    c.close();
+                }
             }
             default:
         }
