@@ -49,6 +49,10 @@ public class Crime {
         mSuspect = suspect;
     }
 
+    public String getPhotoFilenam() {
+        return "IMG_" + getId().toString() + ".jpg";
+    }
+
     public Date getDate() {
         /*String str = DateFormat.getBestDateTimePattern(Locale.getDefault(),"EEE, MMM, dd, yyyy");
         return DateFormat.format(str, mDate);*/

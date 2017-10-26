@@ -11,6 +11,7 @@ import com.mcs.th.forge.criminalintent.database.CrimeCursorWrapper;
 import com.mcs.th.forge.criminalintent.database.CrimeDbSchema;
 import com.mcs.th.forge.criminalintent.database.CrimeDbSchema.CrimeTable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -94,6 +95,11 @@ public class CrimeLab {
         } finally {
             cursor.close();
         }
+    }
+
+    public File getPhotoFile(Crime crime) {
+        File filesDir = mContext.getFilesDir();
+        return new File(filesDir, crime.getPhotoFilenam());
     }
 
     private static ContentValues getContentValues(Crime crime) {
