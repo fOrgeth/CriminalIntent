@@ -16,6 +16,7 @@ import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -231,12 +232,15 @@ public class CrimeFragment extends Fragment {
 
         mCallSuspect = v.findViewById(R.id.call_suspect);
         if (mCrime.getPhoneNumber() != null) {
-            mCallSuspect.setText(mCallSuspect.getText() + mCrime.getPhoneNumber());
+            mCallSuspect.setText(mCallSuspect.getText() + ": " + mCrime.getPhoneNumber());
         }
         mCallSuspect.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                Uri phoneNum = Uri.parse("tel:" + mCrime.getPhoneNumber());
+                callIntent.setData(phoneNum);
+                startActivity(callIntent);
             }
         });
 
@@ -267,9 +271,9 @@ public class CrimeFragment extends Fragment {
                 if (data == null) {
                     return;
                 }
-
                 Uri contactUri = data.getData();
                 String[] queryFields = new String[]{
+                        ContactsContract.Contacts._ID,
                         ContactsContract.Contacts.DISPLAY_NAME
                 };
                 Cursor c = getActivity().getContentResolver()
@@ -279,8 +283,13 @@ public class CrimeFragment extends Fragment {
                         return;
                     }
                     c.moveToFirst();
-                    String suspect = c.getString(0);
+                    long id = c.getLong(0);
+                    Log.d("CrimeFragment", ":" + id);
+                    String suspect = c.getString(1);
+                    String phone = getSuspectPhone(id);
+                    mCrime.setPhoneNumber(phone);
                     mCrime.setSuspect(suspect);
+                    mCallSuspect.setText(mCrime.getPhoneNumber());
                     mSuspectButton.setText(suspect);
                 } finally {
                     c.close();
@@ -289,6 +298,32 @@ public class CrimeFragment extends Fragment {
             default:
         }
 
+    }
+
+    private String getSuspectPhone(long id) {
+        String phoneNum = null;
+        Uri phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        String[] query = new String[]{
+                ContactsContract.Data.CONTACT_ID,
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.TYPE
+        };
+        String mSelectionClause = ContactsContract.Data.CONTACT_ID + " = ?";
+        String[] mSelectionArgs = {"" + id};
+        Cursor c = getActivity().getContentResolver()
+                .query(phoneUri, query, mSelectionClause, mSelectionArgs, null);
+        try {
+            if (c.getCount() == 0) {
+                return null;
+            }
+            while (c.moveToNext()) {
+                phoneNum = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA));
+                Log.d("CrimeFrag", "" + phoneNum);
+            }
+        } finally {
+            c.close();
+        }
+        return phoneNum;
     }
 
     private void updateDate() {
