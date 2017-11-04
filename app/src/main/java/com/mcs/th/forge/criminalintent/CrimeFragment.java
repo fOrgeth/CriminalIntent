@@ -58,6 +58,7 @@ public class CrimeFragment extends Fragment {
     private CheckBox mSolvedCheckBox;
     private Button mReportButton;
     private Button mSuspectButton;
+    private Button mCallSuspect;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
     private File mPhotoFile;
@@ -228,6 +229,18 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        mCallSuspect = v.findViewById(R.id.call_suspect);
+        if (mCrime.getPhoneNumber() != null) {
+            mCallSuspect.setText(mCallSuspect.getText() + mCrime.getPhoneNumber());
+        }
+        mCallSuspect.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
         return v;
     }
 
@@ -254,6 +267,7 @@ public class CrimeFragment extends Fragment {
                 if (data == null) {
                     return;
                 }
+
                 Uri contactUri = data.getData();
                 String[] queryFields = new String[]{
                         ContactsContract.Contacts.DISPLAY_NAME
@@ -313,6 +327,12 @@ public class CrimeFragment extends Fragment {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minutes = calendar.get(Calendar.MINUTE);
         mTimeButton.setText(String.format(Locale.getDefault(), "%02d : %02d", hour, minutes));
+    }
+
+    private void updatePhotoView() {
+        if (mPhotoFile == null || !mPhotoFile.exists()) {
+
+        }
     }
 
 }

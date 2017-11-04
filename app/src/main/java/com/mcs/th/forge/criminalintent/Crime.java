@@ -1,6 +1,7 @@
 package com.mcs.th.forge.criminalintent;
 
 
+import android.provider.ContactsContract;
 import android.text.format.DateFormat;
 
 import java.util.Date;
@@ -14,6 +15,7 @@ public class Crime {
     private boolean mSolved;
     private Date mDate;
     private String mSuspect;
+    private String mPhoneNumber;
 
     public Crime() {
         this(UUID.randomUUID());
@@ -49,8 +51,16 @@ public class Crime {
         mSuspect = suspect;
     }
 
-    public String getPhotoFilenam() {
+    public String getPhotoFilename() {
         return "IMG_" + getId().toString() + ".jpg";
+    }
+
+    public String getPhoneNumber() {
+        return mPhoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        mPhoneNumber = phoneNumber;
     }
 
     public Date getDate() {

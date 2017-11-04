@@ -3,12 +3,10 @@ package com.mcs.th.forge.criminalintent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.mcs.th.forge.criminalintent.database.CrimeBaseHelper;
 import com.mcs.th.forge.criminalintent.database.CrimeCursorWrapper;
-import com.mcs.th.forge.criminalintent.database.CrimeDbSchema;
 import com.mcs.th.forge.criminalintent.database.CrimeDbSchema.CrimeTable;
 
 import java.io.File;
@@ -99,7 +97,7 @@ public class CrimeLab {
 
     public File getPhotoFile(Crime crime) {
         File filesDir = mContext.getFilesDir();
-        return new File(filesDir, crime.getPhotoFilenam());
+        return new File(filesDir, crime.getPhotoFilename());
     }
 
     private static ContentValues getContentValues(Crime crime) {
