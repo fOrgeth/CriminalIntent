@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -207,6 +208,13 @@ public class CrimeFragment extends Fragment {
 
         mPhotoButton = v.findViewById(R.id.crime_camera);
         mPhotoView = v.findViewById(R.id.crime_photo);
+        updatePhotoView();
+        mPhotoView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -295,6 +303,12 @@ public class CrimeFragment extends Fragment {
                     c.close();
                 }
             }
+            case REQUEST_PHOTO: {
+                Uri uri = FileProvider.getUriForFile(getActivity(),
+                        AUTHORITY_FIELD, mPhotoFile);
+                getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                updatePhotoView();
+            }
             default:
         }
 
@@ -366,7 +380,11 @@ public class CrimeFragment extends Fragment {
 
     private void updatePhotoView() {
         if (mPhotoFile == null || !mPhotoFile.exists()) {
-
+            mPhotoView.setImageDrawable(null);
+        } else {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(),
+                    getActivity());
+            mPhotoView.setImageBitmap(bitmap);
         }
     }
 
