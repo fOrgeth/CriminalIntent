@@ -226,7 +226,6 @@ public class CrimeFragment extends Fragment {
                 updatePhotoView(imageWidth, imageHeight);
             }
         });
-        updatePhotoView();
         mPhotoView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -329,7 +328,7 @@ public class CrimeFragment extends Fragment {
                 Uri uri = FileProvider.getUriForFile(getActivity(),
                         AUTHORITY_FIELD, mPhotoFile);
                 getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                updatePhotoView();
+                updatePhotoView(imageWidth, imageHeight);
             }
             default:
         }
