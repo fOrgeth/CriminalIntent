@@ -7,6 +7,7 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -24,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -38,8 +40,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import static android.support.v4.app.ShareCompat.*;
-import static android.widget.CompoundButton.*;
+import static android.support.v4.app.ShareCompat.IntentBuilder;
+import static android.widget.CompoundButton.OnCheckedChangeListener;
+import static android.widget.CompoundButton.OnClickListener;
 
 public class CrimeFragment extends Fragment {
 
@@ -65,6 +68,8 @@ public class CrimeFragment extends Fragment {
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
     private File mPhotoFile;
+
+    private int imageWidth, imageHeight;
 
     @Override
     public void onPause() {
@@ -209,6 +214,18 @@ public class CrimeFragment extends Fragment {
 
         mPhotoButton = v.findViewById(R.id.crime_camera);
         mPhotoView = v.findViewById(R.id.crime_photo);
+        final ViewTreeObserver observer = mPhotoView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                imageWidth = mPhotoView.getMeasuredWidth();
+                imageHeight = mPhotoView.getMeasuredHeight();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    mPhotoView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                updatePhotoView(imageWidth, imageHeight);
+            }
+        });
         updatePhotoView();
         mPhotoView.setOnClickListener(new OnClickListener() {
             @Override
@@ -383,12 +400,12 @@ public class CrimeFragment extends Fragment {
         mTimeButton.setText(String.format(Locale.getDefault(), "%02d : %02d", hour, minutes));
     }
 
-    private void updatePhotoView() {
+    private void updatePhotoView(int width, int height) {
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(),
-                    getActivity());
+                    width, height);
             mPhotoView.setImageBitmap(bitmap);
         }
     }
