@@ -1,6 +1,7 @@
 package com.mcs.th.forge.criminalintent;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -68,8 +69,19 @@ public class CrimeFragment extends Fragment {
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
     private File mPhotoFile;
-
+    private Callbacks mCallbacks;
     private int imageWidth, imageHeight;
+
+
+    public interface Callbacks {
+        void onCrimeUpdated(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
 
     @Override
     public void onPause() {
@@ -113,6 +125,12 @@ public class CrimeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -128,6 +146,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 mCrime.setTitle(charSequence.toString());
+                updateCrime();
             }
 
             @Override
@@ -168,6 +187,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+                updateCrime();
             }
         });
 
@@ -287,6 +307,7 @@ public class CrimeFragment extends Fragment {
             case REQUEST_DATE: {
                 Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
                 mCrime.setDate(date);
+                updateCrime();
                 updateDate();
                 break;
             }
@@ -318,6 +339,7 @@ public class CrimeFragment extends Fragment {
                     String phone = getSuspectPhone(id);
                     mCrime.setPhoneNumber(phone);
                     mCrime.setSuspect(suspect);
+                    updateCrime();
                     mCallSuspect.setText(mCrime.getPhoneNumber());
                     mSuspectButton.setText(suspect);
                 } finally {
@@ -328,6 +350,7 @@ public class CrimeFragment extends Fragment {
                 Uri uri = FileProvider.getUriForFile(getActivity(),
                         AUTHORITY_FIELD, mPhotoFile);
                 getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                updateCrime();
                 updatePhotoView(imageWidth, imageHeight);
             }
             default:
@@ -359,6 +382,11 @@ public class CrimeFragment extends Fragment {
             c.close();
         }
         return phoneNum;
+    }
+
+    private void updateCrime() {
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+        mCallbacks.onCrimeUpdated(mCrime);
     }
 
     private void updateDate() {

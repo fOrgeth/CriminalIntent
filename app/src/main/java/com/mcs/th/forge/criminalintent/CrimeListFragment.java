@@ -1,5 +1,6 @@
 package com.mcs.th.forge.criminalintent;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,9 +34,21 @@ public class CrimeListFragment extends Fragment {
     private boolean mSubtitleVisible;
     private ConstraintLayout mEmptyLayout;
 
+    private Callbacks mCallbacks;
+
 
     //    private static final int REQUEST_CRIME = 1;
 
+
+    public interface Callbacks {
+        void onCrimeSelected(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,8 +80,10 @@ public class CrimeListFragment extends Fragment {
             case R.id.new_crime:
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
-                startActivity(intent);
+                /*Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
+                startActivity(intent);*/
+                updateUI();
+                mCallbacks.onCrimeSelected(crime);
                 return true;
             case R.id.show_subtitle:
                 mSubtitleVisible = !mSubtitleVisible;
@@ -101,6 +116,12 @@ public class CrimeListFragment extends Fragment {
         outState.putSerializable(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -124,7 +145,7 @@ public class CrimeListFragment extends Fragment {
         updateUI();
     }
 
-    private void updateUI() {
+    public void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
         if (crimes.isEmpty()) {
@@ -171,9 +192,12 @@ public class CrimeListFragment extends Fragment {
         @Override
         public void onClick(View view) {
             savedPosition = getAdapterPosition();
-            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
+            /*Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
+            startActivity(intent);*/
+
 //            startActivityForResult(intent, REQUEST_CRIME);
-            startActivity(intent);
+
+            mCallbacks.onCrimeSelected(mCrime);
         }
     }
 
