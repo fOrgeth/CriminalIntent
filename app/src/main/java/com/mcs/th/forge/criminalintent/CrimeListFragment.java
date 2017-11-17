@@ -2,6 +2,7 @@ package com.mcs.th.forge.criminalintent;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +21,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mcs.th.forge.criminalintent.itemtouchhelper.ItemTouchHelperAdapter;
+import com.mcs.th.forge.criminalintent.itemtouchhelper.ItemTouchHelperHolder;
+import com.mcs.th.forge.criminalintent.itemtouchhelper.SimpleItemTouchHelperCallback;
 
 import java.util.List;
 
@@ -35,10 +41,19 @@ public class CrimeListFragment extends Fragment {
     private ConstraintLayout mEmptyLayout;
 
     private Callbacks mCallbacks;
+    private ItemTouchHelper mItemTouchHelper;
 
 
     //    private static final int REQUEST_CRIME = 1;
 
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(mCrimeRecyclerView);
+    }
 
     public interface Callbacks {
         void onCrimeSelected(Crime crime);
@@ -167,12 +182,13 @@ public class CrimeListFragment extends Fragment {
         updateSubtitle();
     }
 
-    private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ItemTouchHelperHolder {
 
         private TextView mTitleTextView;
         private TextView mDateTextView;
         private ImageView mSolvedImageView;
         private Crime mCrime;
+        private Drawable mBackgroundBuffer;
 
         public CrimeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_crime, parent, false));
@@ -199,6 +215,17 @@ public class CrimeListFragment extends Fragment {
 
             mCallbacks.onCrimeSelected(mCrime);
         }
+
+        @Override
+        public void onItemSelected() {
+            mBackgroundBuffer = itemView.getBackground();
+            itemView.setBackgroundColor(0x11ffffff);
+        }
+
+        @Override
+        public void onItemClear() {
+            itemView.setBackground(mBackgroundBuffer);
+        }
     }
 
     /*@Override
@@ -208,7 +235,7 @@ public class CrimeListFragment extends Fragment {
         }
     }*/
 
-    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
+    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> implements ItemTouchHelperAdapter {
 
         private List<Crime> mCrimes;
 
@@ -235,6 +262,18 @@ public class CrimeListFragment extends Fragment {
 
         public void setCrimes(List<Crime> crimes) {
             mCrimes = crimes;
+        }
+
+        @Override
+        public void onItemMove(int fromPosition, int toPosition) {
+
+        }
+
+        @Override
+        public void onItemDismiss(int position) {
+            CrimeLab.get(getActivity()).deleteCrime(mCrimes.get(position));
+            mCrimes.remove(position);
+            notifyItemRemoved(position);
         }
     }
 }
