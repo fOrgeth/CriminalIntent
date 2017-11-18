@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Преступное намерение</string>
+    <string name="title_label">Название</string>
+    <string name="title_hint">Введите заголовок преступления</string>
+    <string name="details_label">Детали</string>
+    <string name="solved_label">Решено</string>
+    <string name="list_item_crime_title">Название преступления</string>
+    <string name="list_item_crime_date">Crime Date</string>
+    <string name="first_crime_btn_txt">Первое</string>
+    <string name="last_crime_btn_txt">Последнее</string>
+    <string name="date_picker_title">Дата преступления</string>
+    <string name="dialog_date_ok">Ок</string>
+
+    <string name="new_crime">Новое преступление</string>
+    <string name="show_subtitle">Показать подзаголовок</string>
+    <string name="hide_subtitle">Скрыть подзаголовок</string>
+    <string name="subtitle_format">%1$d преступлений</string>
+    <string name="delete_crime">Удалить преступление</string>
+
+    <string name="empty_text">Пожалуйста добавьте новое преступление</string>
+    <string name="add_crime_btn">Добавить преступление</string>
+
+    <plurals name="subtitle_plural">
+        <item quantity="one">%1$d преступление</item>
+        <item quantity="few">%1$d преступления</item>
+        <item quantity="many">%1$d преступлений</item>
+    </plurals>
+
+    <string name="crime_suspect_text">Выберите подозреваемого</string>
+    <string name="crime_report_text">Отправить отчет о преступнлении</string>
+
+    <string name="crime_report">
+        %1$s! Преступление было обнаружено в %2$s. %3$s, %4$s
+    </string>
+    <string name="crime_report_solved">Дело решено</string>
+    <string name="crime_report_unsolved">Дело не решено</string>
+    <string name="crime_report_no_suspect">нет подозреваемого</string>
+    <string name="crime_report_suspect">подозреваемый: %s.</string>
+    <string name="crime_report_subject">CriminalIntent Отчет о преступлении</string>
+    <string name="send_report">Отправить отчет через</string>
+    <string name="call_suspect_text">Позвонить подозреваемому</string>
+</resources>
