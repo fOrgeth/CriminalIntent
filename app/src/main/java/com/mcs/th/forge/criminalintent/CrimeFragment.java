@@ -195,9 +195,10 @@ public class CrimeFragment extends Fragment {
         mReportButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent shareIntent = IntentBuilder.from(getActivity())
+                Intent intent = IntentBuilder.from(getActivity())
                         .setChooserTitle(getString(R.string.send_report))
                         .setType("text/plain")
+                        .setSubject(getString(R.string.crime_report_subject))
                         .setText(getCrimeReport())
                         .createChooserIntent();
 
@@ -206,8 +207,8 @@ public class CrimeFragment extends Fragment {
                 intent.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
                 intent = Intent.createChooser(intent, getString(R.string.send_report));*/
-                startActivity(shareIntent);
 
+                startActivity(intent);
             }
         });
 
@@ -390,7 +391,7 @@ public class CrimeFragment extends Fragment {
     }
 
     private void updateDate() {
-        mDateButton.setText(mCrime.getDate().toString());
+        mDateButton.setText(mCrime.getLocalizedDate().toString());
     }
 
     private String getCrimeReport() {

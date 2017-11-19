@@ -69,6 +69,11 @@ public class Crime {
         return mDate;
     }
 
+    public CharSequence getLocalizedDate(){
+        String str = DateFormat.getBestDateTimePattern(Locale.getDefault(),"EEE, MMM, dd, yyyy");
+        return DateFormat.format(str, mDate);
+    }
+
     public void setDate(Date date) {
         this.mDate = date;
     }
